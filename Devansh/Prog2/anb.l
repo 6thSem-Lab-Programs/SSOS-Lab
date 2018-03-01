@@ -1,6 +1,6 @@
 %{
 	#include <stdio.h>
-	#include <stdlib.h>
+	#include "yytab.h"
 	extern yylval;
 %}
 
