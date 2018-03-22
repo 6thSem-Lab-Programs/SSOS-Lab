@@ -1,14 +1,28 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-void srt(int n,int *burst,int *atime)
+void srt(int n,int *burst)
 {
-	int i,po=0,pi = 0,lBurst = 999,rt = 999,time = 0;
+	int i,po=0,pi = 0,lBurst = 999,rt = 0,time = 0,st = 0;
+	printf("Enter arrival time for:\n");
 
-	printf();
+	int atime[n];
+	
+	for(i = 0;i < n;i++)
+	{
+		printf("Process %d : ",(i+1));
+		scanf("%d",&atime[i]);
+		printf("\n");
+	}
+
+	for(i = 0;i < n;i++)
+		rt += burst[i];
+
+	printf("Time\tProcess\tRemaining burst time\n");
+
 	while(rt != 0)
 	{
-		rt = 0;
+		lBurst = 999;
 		po = pi;
 		for(i = 0;i < n;i++)
 		{
@@ -21,13 +35,23 @@ void srt(int n,int *burst,int *atime)
 				}
 			}
 		}
+		if(burst[pi]>0)
+			burst[pi]--;
 
 		if(po != pi)
 		{
-			printf()
-		}	
-		
+			printf("%d-%d\t%3d\t%8d\n",st,time,(po+1),burst[po]);
+			st = time;
+		}
+
+		rt = 0;
+
+		for(i = 0;i < n;i++)
+			rt += burst[i];	
+		time++;
 	}
+
+	printf("%d-%d\t%3d\t%8d\n",st,time,(pi+1),burst[pi]);
 }
 
 void rr(int n,int *burst)
@@ -50,16 +74,17 @@ void rr(int n,int *burst)
 				{
 					time += quantum;
 					burst[i] -= quantum;
+					printf("%d-%d\t%3d\t%8d\n",(time-quantum),time,(i+1),burst[i]);
 				}
 				else
 				if(burst[i] < quantum)
 				{
-					time += burst[n];
+					time += burst[i];
+					printf("%d-%d\t%3d\t%8d\n",(time-burst[i]),time,(i+1),burst[i]);
 					burst[i] = 0;
 				}
-				rt+=burst[i];
 
-				printf("%3d\t%3d\t%8d\n",time,(i+1),burst[i]);
+				rt+=burst[i];
 			}
 		}
 	}
@@ -91,17 +116,6 @@ int main()
 		printf("\n");
 	}
 
-	printf("Enter arrival time for:\n");
-
-	int atime[n];
-	
-	for(i = 0;i < n;i++)
-	{
-		printf("Process %d : ",(i+1));
-		scanf("%d",&atime[i]);
-		printf("\n");
-	}
-
 	int choice = 1;
 
 	printf("Which scheduling algorithm to use :\n1-Shortest remaining time\n2-Round robin\n");
@@ -114,7 +128,7 @@ int main()
 	}
 
 	if(choice == 1)
-		srt(n,burst,atime);
+		srt(n,burst);
 	else
 
 	if(choice == 2)
