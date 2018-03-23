@@ -1,19 +1,27 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-void srt(int n,int *burst)
+void srt(int n,int *burst,int *atime)
 {
-	int i,po=0,pi = 0,lBurst = 999,rt = 0,time = 0,st = 0;
+	int i,po=0,pi = 0,lBurst = 999,rt = 0,time = 999,st = 0;
 	printf("Enter arrival time for:\n");
 
-	int atime[n];
+	int wt[n],tat[n];
 	
 	for(i = 0;i < n;i++)
 	{
-		printf("Process %d : ",(i+1));
-		scanf("%d",&atime[i]);
-		printf("\n");
+		wt[i] = 0;
+		tat[i] = 0;
 	}
+
+	for(i = 0;i < n;i++)
+		if(atime[i] <= time && burst[i] < lBurst)
+		{
+			pi = i;
+			time = atime[i];
+			lBurst = burst[i];
+		}
+	st = time;
 
 	for(i = 0;i < n;i++)
 		rt += burst[i];
@@ -35,8 +43,11 @@ void srt(int n,int *burst)
 				}
 			}
 		}
-		if(burst[pi]>0)
-			burst[pi]--;
+		burst[pi]--;
+
+		for(i = 0;i < n;i++)
+			if(burst[i] != 0 && i != pi && atime[i] <= time)
+				wt[i]++;
 
 		if(po != pi)
 		{
@@ -49,45 +60,84 @@ void srt(int n,int *burst)
 		for(i = 0;i < n;i++)
 			rt += burst[i];	
 		time++;
+
+		if(burst[pi] == 0)
+			tat[pi] = time - atime[pi];
+	}
+	float awt = 0,atat = 0;
+	printf("%d-%d\t%3d\t%8d\n",st,time,(pi+1),burst[pi]);
+	printf("Process\tWaiting Time\tTurn Around Time\n");
+	for(i = 0;i < n;i++)
+	{
+		printf("%3d%8d%16d\n",(i+1),wt[i],tat[i]);
+		awt += wt[i];
+		atat += tat[i];
 	}
 
-	printf("%d-%d\t%3d\t%8d\n",st,time,(pi+1),burst[pi]);
+	printf("Average waiting time = %.2f\nAverage turn around time = %.2f\n",(awt/n),(atat/n));
+
 }
 
-void rr(int n,int *burst)
+void rr(int n,int *burst,int *atime)
 {
-	int quantum = 0;
+	int quantum = 0,wt[n],tat[n],i,j,rt = 999,time = 0,t;
+
+	for(i = 0;i < n;i++)
+	{
+		wt[i] = 0;
+		tat[i] = 0;
+	}
 
 	printf("Enter quantum size : ");
 	scanf("%d",&quantum);
 	printf("\n");
-	int i,rt = 999,time = 0;
+	
 	printf("Time\tProcess\tRemaining burst time\n");
 	while(rt != 0)
 	{
 		rt = 0;
 		for(i = 0;i < n;i++)
 		{	
-			if(burst[i] != 0)
+			if(burst[i] != 0 && atime[i] <= time)
 			{
 				if(burst[i] >= quantum)
 				{
-					time += quantum;
 					burst[i] -= quantum;
-					printf("%d-%d\t%3d\t%8d\n",(time-quantum),time,(i+1),burst[i]);
+					t = quantum;
+					printf("%d-%d\t%3d\t%8d\n",time,(time+t),(i+1),burst[i]);
 				}
 				else
 				if(burst[i] < quantum)
 				{
-					time += burst[i];
-					printf("%d-%d\t%3d\t%8d\n",(time-burst[i]),time,(i+1),burst[i]);
+					t = burst[i];
+					printf("%d-%d\t%3d\t%8d\n",time,(time+t),(i+1),burst[i]);
 					burst[i] = 0;
 				}
-
+				for(j = 0;j < n;j++)
+					if(burst[j] != 0 && i != j && atime[j] <= time)
+						wt[j] += t;
+				time += t;
 				rt+=burst[i];
+				if(burst[i] == 0)
+					tat[i] = time - atime[i];
+				
+		//		printf("Time = %d\n",(time+t));
+		//		for(j = 0;j < n;j++)
+		//			printf("%3d%8d%16d\n",(j+1),wt[j],tat[j]);
+
+
 			}
 		}
 	}
+	float awt = 0,atat = 0;
+	printf("Process\tWaiting Time\tTurn Around Time\n");
+		for(i = 0;i < n;i++)
+		{
+			printf("%3d%8d%16d\n",(i+1),wt[i],tat[i]);
+			awt += wt[i];
+			atat += tat[i];
+		}
+	printf("Average waiting time = %.2f\nAverage turn around time = %.2f\n",(awt/n),(atat/n));
 }
 
 int main()
@@ -103,7 +153,7 @@ int main()
 		exit(-1);
 	}
 
-	int burst[n];
+	int burst[n],atime[n];
 
 	printf("Enter burst time for:\n");
 
@@ -113,6 +163,15 @@ int main()
 	{
 		printf("Process %d : ",(i+1));
 		scanf("%d",&burst[i]);
+		printf("\n");
+	}
+
+	printf("Enter arrival time for:\n");
+
+	for(i = 0;i < n;i++)
+	{
+		printf("Process %d : ",(i+1));
+		scanf("%d",&atime[i]);
 		printf("\n");
 	}
 
@@ -128,9 +187,9 @@ int main()
 	}
 
 	if(choice == 1)
-		srt(n,burst);
+		srt(n,burst,atime);
 	else
 
 	if(choice == 2)
-		rr(n,burst);
+		rr(n,burst,atime);
 }
