@@ -27,8 +27,6 @@ void lru(int pages[n], int frame[fsize]) {
 
 		if((pos = lsearch(frame, fsize, pages[i])) != -1) {
 			ts[pos] = temp--;
-			// printf("%d\t%d\n", ts[0], ts[1]);
-			// printf("%d\t%d\n", frame[0], frame[1]);
 
 			printf("Page already in memory.\n");
 		} else {
@@ -36,8 +34,6 @@ void lru(int pages[n], int frame[fsize]) {
 				frame[cap] = pages[i];
 				ts[cap] = temp--;
 				cap++;
-				// printf("%d\t%d\n", ts[0], ts[1]);
-				// printf("%d\t%d\n", frame[0], frame[1]);
 
 				printf("Page fault occured. Page inserted into memory without replacement.\n");
 			} else {
@@ -48,20 +44,12 @@ void lru(int pages[n], int frame[fsize]) {
 						maxpos = j;
 					}
 				}
-<<<<<<< HEAD
 
 				int t = frame[maxpos];
 				frame[maxpos] = pages[i];
 				ts[maxpos] = temp--;
-				// printf("%d\t%d\n", ts[0], ts[1]);
-				// printf("%d\t%d\n", frame[0], frame[1]);
 
 				printf("Page fault occured. Replaced page %d in memory.\n", t);
-=======
-				printf("Page fault occured. Replaced page %d in memory.\n", frame[maxpos]);
-				ts[maxpos] = temp--;
-				frame[maxpos] = pages[i];
->>>>>>> eba0c36b04b0c92c0dce2312e28393fbb8f8c7a0
 			}
 		}
 	}
