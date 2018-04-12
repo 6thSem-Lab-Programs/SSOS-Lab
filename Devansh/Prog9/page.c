@@ -44,10 +44,9 @@ void lru(int pages[n], int frame[fsize]) {
 						maxpos = j;
 					}
 				}
-
+				printf("Page fault occured. Replaced page %d in memory.\n", frame[maxpos]);
+				ts[maxpos] = temp--;
 				frame[maxpos] = pages[i];
-
-				printf("Page fault occured. Replaced page %d in memory.\n", pages[maxpos]);
 			}
 		}
 	}
