@@ -58,7 +58,7 @@ void main(){
 		for(j = 0;j < rn;j++)
 			scanf("%d",&al[i][j]);
 
-	printf("Enter available resource number\n");
+	printf("Enter number of available resources\n");
 
 	for(i = 0;i < rn;i++)
 		scanf("%d",&avail[i]);
@@ -66,6 +66,13 @@ void main(){
 	for(i = 0;i < pn;i++)
 		for(j = 0;j < rn;j++)
 			need[i][j] = max[i][j] - al[i][j];
+
+	printf("Need matrix is :\n");
+	for(i = 0;i < pn;i++){
+		for(j = 0;j < rn;j++)
+			printf("%d ",need[i][j]);
+		printf("\n");
+	}
 
 	banker(al,need,avail);
 }
