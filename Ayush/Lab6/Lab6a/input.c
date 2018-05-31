@@ -1,13 +1,13 @@
-#include<stdio.h>
-/*demo 
- program */
+//Hello Program
+#include<Lol.h>
+/*A Program 
+for 
+nothing bro 
+*/
 int main() {
-	int a , b , c;
-//addition of a &b
-c=a+b;
-/* c has 
- the output*/
-//printing the output
-printf("a+b=%d\n",c);
-return 1;
+	//variable A
+	int a;
+	/*lol
+broo*/
+	return 0;
 }

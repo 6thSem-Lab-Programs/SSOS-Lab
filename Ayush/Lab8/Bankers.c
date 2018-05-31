@@ -1,88 +1,76 @@
-
 #include<stdio.h>
 #include<stdlib.h>
 
-int n = 0, r = 0;
+int n=0,r=0;
 
-void compareNeed(int need[n][r], int avail[r], int allo[n][r]) {
-	int i,j,flag=1,reloop=0,done[r],prevDone[r],count;
-	for(i=0;i<n;++i) done[i] = prevDone[i] = 0;
-
-	do {
-		reloop=0;
-		count=0;
-		for(i=0;i<n;++i) {
-			if(done[i]==0) {
+void check(int need[n][r],int allo[n][r], int avail[r]) {
+	int reloop=0,count=0,done[n],prevDone[n],flag=1,i,j;
+	for(i=0;i<n;++i)
+		prevDone[i]=done[i]=0;
+	do{
+		reloop=count=0;
+		for(i=0;i<n;++i){
+			if(done[i]==0){
 				flag=1;
-				for(j=0;j<r;++j) {
-					if(avail[j]<need[i][j]) {
+				for(j=0;j<r;++j){
+					if(avail[j] < need[i][j]){
 						flag=0;
 						break;
 					}
 				}
-				if(flag==1) {
-					printf("\nProcess %d",(i+1));
+				if(flag==1){
+					printf("Process %d\n",(i+1));
 					done[i]=1;
-					for(j=0;j<r;++j) {
-						avail[j] += allo[i][j];
-					}
+					for(j=0;j<r;++j)
+						avail[j]+=allo[i][j];
 				}
 			}
 		}
 		for(i=0;i<n;++i)
-			if(prevDone[i] == done[i]) ++count;
-		if(count==n) {
-			printf("\n\nUnsafe State !!\n\n");
-			exit(0);
-		}else {
+			if(prevDone[i]==done[i])
+				++count;
+		if(count==n){
+			printf("\nUnsafe State Encountered !!\n");
+			exit(1);
+		}else{
 			for(i=0;i<n;++i)
-				prevDone[i] = done[i];
+				prevDone[i]=done[i];
 		}
 		for(i=0;i<n;++i)
-			if(done[i]==0)
+			if(done[i]==0){
 				reloop=1;
-
+				break;
+			}
 	}while(reloop);
-	printf("\n\nIt is a Safe State !\n\n");
-	return;
+	printf("\nIt is a safe state !\n");
 }
 
 int main() {
-	printf("\nEnter the number of processes :\t");
+	printf("\nHow many Processes ?\t");
 	scanf("%d",&n);
-	printf("\nEnter the number of resources :\t");
+	printf("\nHow many Resources ?\t");
 	scanf("%d",&r);
-
-	int allo[n][r], max[n][r], avail[r], need[n][r],i,j;
-	printf("\nEnter the Allocation Matrix :\n");
-	for(i=0;i<n;++i) {
-		printf("\tFor Process %d :\n",(i+1));
-		for(j=0;j<r;++j) {
+	int max[n][r],need[n][r],avail[r],allo[n][r],i,j;
+	printf("\nEnter the Allocation Matrix\n");
+	for(i=0;i<n;++i)
+		for(j=0;j<r;++j)
 			scanf("%d",&allo[i][j]);
-		}
-	}
-	printf("\nEnter the Maximum Matrix :\n");
-	for(i=0;i<n;++i) {
-		printf("\tFor Process %d :\n",(i+1));
-		for(j=0;j<r;++j){
+	printf("\nEnter the Maximum Matrix\n");
+	for(i=0;i<n;++i)
+		for(j=0;j<r;++j)
 			scanf("%d",&max[i][j]);
-		}
-	}
-	printf("\nEnter the Available resources :\n");
-	for(j=0;j<r;++j) {
+	printf("\nEnter the Available Resources\n");
+	for(j=0;j<r;++j)
 		scanf("%d",&avail[j]);
-	}
-
 	printf("\nThe Need Matrix is :\n");
-	for(i=0;i<n;++i) {
-		printf("\nProcess %d",(i+1));
-		for(j=0;j<r;++j) {
-			need[i][j] = max[i][j] - allo[i][j];
-			printf("%d\t",need[i][j]);
+	for(i=0;i<n;++i){
+		for(j=0;j<r;++j){
+			need[i][j] = max[i][j]-allo[i][j];
+			printf("%d",need[i][j]);
 		}
+		printf("\n");
 	}
-
-	printf("\n\nSequence is \n");
-	compareNeed(need, avail, allo);	
-	return 1;
+	printf("\nThe Sequence is :\n");
+	check(need,allo,avail);
+	return 0;
 }
